@@ -15,6 +15,7 @@ class Character extends MovableObject {
     ];
 
     world;
+    walkin_sound = new Audio('audio/laufen.mp3');
 
     constructor() {
         super().loadImage('img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-21.png')
@@ -27,15 +28,17 @@ class Character extends MovableObject {
     animate() {
 
         setInterval(() => {
-
+                this.walkin_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
                 this.x += this.speed * 35;
                 this.otherDirection = false;
+                this.walkin_sound.play();
             }
 
             if (this.world.keyboard.LEFT && this.x > -500) {
                 this.x -= this.speed * 35;
                 this.otherDirection = true;
+                this.walkin_sound.play();
             }
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
