@@ -10,6 +10,8 @@ class MovableObject {
 
     imageCache = {};
 
+    otherDirection = false;
+
 
     loadImage(path) {
         this.img = new Image(); //= selbe wie =document.getElementById('image')<img id"=image" src>
