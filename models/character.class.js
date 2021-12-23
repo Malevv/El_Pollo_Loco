@@ -5,6 +5,7 @@ class Character extends MovableObject {
     y = 90;
 
 
+
     IMAGES_WALKING = [
         'img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-21.png',
         'img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-22.png',
@@ -14,13 +15,51 @@ class Character extends MovableObject {
         'img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-26.png'
     ];
 
+
+    IMAGES_JUMPING = [
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-31.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-32.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-33.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-34.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-35.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-36.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-37.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-38.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-39.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/3.Secuencia_salto/J-40.png'
+    ];
+
+    IMAGES_COLLISION = [
+        'img/10. selfintegrstion/blood.png'
+    ];
+
+    IMAGES_DEAD = [
+
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-51.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-52.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-53.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-54.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-55.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-56.png',
+        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-57.png',
+        'img/10.selfintegrstion/rip.png'
+    ];
+
+
     world;
     walkin_sound = new Audio('audio/laufen.mp3');
+    jumping_sound = new Audio('audio/jump.mp3');
+    collision_sound = new Audio('audi/collision.mp3')
+    dead_sound1 = new Audio('audio/dead1.mp3')
+    dead_sound2 = new Audio('audio/dead2.mp3')
 
     constructor() {
         super().loadImage('img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-21.png')
         this.loadImages(this.IMAGES_WALKING);
-        
+        this.loadImages(this.IMAGES_JUMPING);
+        this.loadImages(this.IMAGES_COLLISION);
+        this.loadImages(this.IMAGES_DEAD);
+        this.applyGravity();
 
         this.animate();
     }
@@ -28,35 +67,46 @@ class Character extends MovableObject {
     animate() {
 
         setInterval(() => {
-                this.walkin_sound.pause();
+            this.walkin_sound.pause();
+            this.jumping_sound.pause();
             if (this.world.keyboard.RIGHT && this.x < this.world.level.level_end_x) {
-                this.x += this.speed * 35;
-                this.otherDirection = false;
+                this.moveRight();
                 this.walkin_sound.play();
             }
 
             if (this.world.keyboard.LEFT && this.x > -500) {
-                this.x -= this.speed * 35;
-                this.otherDirection = true;
+                this.moveLeft();
                 this.walkin_sound.play();
+            }
+
+            if (this.world.keyboard.SPACE && !this.isAboveGround()) {
+                this.jump();
+                this.jumping_sound.play();
+
             }
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
 
         setInterval(() => {
+            if (this.isDead()) {
+                this.playAnimation(this.IMAGES_DEAD);
+                this.dead_sound1.play('currentTime', 0);
+                this.dead_sound2.play('currentTime', 0);
 
-            if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+            } else if (this.isAboveGround()) {
+                this.playAnimation(this.IMAGES_JUMPING);
 
-                let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 %(Modulo = Mathematischer Rest) 6; Rest 0 bis 6 => dann wieder 0 unendlich!! 
-                let path = this.IMAGES_WALKING[i];
-                this.img = this.imageCache[path];
-                this.currentImage++;
+            } else {
+
+                if (this.world.keyboard.RIGHT || this.world.keyboard.LEFT) {
+
+                    this.playAnimation(this.IMAGES_WALKING);
+                }
             }
+
         }, 90);
     }
 
-    jump() {
 
-    }
 }
 
