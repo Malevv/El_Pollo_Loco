@@ -30,19 +30,25 @@ class Character extends MovableObject {
     ];
 
     IMAGES_COLLISION = [
-        'img/10. selfintegrstion/blood.png'
+        'img/10.selfintegrstion/blood.png'
     ];
 
     IMAGES_DEAD = [
 
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-51.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-52.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-53.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-54.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-55.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-56.png',
-        'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-57.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-51.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-52.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-53.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-54.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-55.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-56.png',
+        // 'img/2.Secuencias_Personaje-Pepe-corrección/5.Muerte/D-57.png',
         'img/10.selfintegrstion/rip.png'
+    ];
+
+    IMAGES_HURT = [
+        'img/2.Secuencias_Personaje-Pepe-corrección/4.Herido/H-41.png',        
+        'img/2.Secuencias_Personaje-Pepe-corrección/4.Herido/H-41.png',       
+        'img/2.Secuencias_Personaje-Pepe-corrección/4.Herido/H-41.png'
     ];
 
 
@@ -59,6 +65,8 @@ class Character extends MovableObject {
         this.loadImages(this.IMAGES_JUMPING);
         this.loadImages(this.IMAGES_COLLISION);
         this.loadImages(this.IMAGES_DEAD);
+        this.loadImages(this.IMAGES_HURT);
+
         this.applyGravity();
 
         this.animate();
@@ -87,9 +95,14 @@ class Character extends MovableObject {
             this.world.camera_x = -this.x + 100;
         }, 1000 / 60);
 
-        setInterval(() => {
+        this.playInterval= setInterval(() => {
             if (this.isDead()) {
                 this.playAnimation(this.IMAGES_DEAD);
+                setTimeout(() => {
+                    clearInterval(this.playInterval)
+                }, 300);
+            } else if(this.isHurt()){
+                this.playAnimation(this.IMAGES_HURT);
                 this.dead_sound1.play('currentTime', 0);
                 this.dead_sound2.play('currentTime', 0);
 

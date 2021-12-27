@@ -1,21 +1,10 @@
-class MovableObject {
-    x = 10;
-    y = 140;
-    img;
-    height = 150;
-    width = 100;
-
-    currentImage = 0;
+class MovableObject extends DrawableObject{
     speed = 0.15;
-
-    imageCache = {};
-
     otherDirection = false;
-
     SpeedY = 0;
     acceleration = 3;
-
     energy = 100;
+    lastHIt= 0;
 
     applyGravity() {
         setInterval(() => {
@@ -30,17 +19,7 @@ class MovableObject {
     isAboveGround() {
         return this.y < 75;
     }
-
-
-    loadImage(path) {
-        this.img = new Image(); //= selbe wie =document.getElementById('image')<img id"=image" src>
-        this.img.src = path;
-    }
-
-
-    draw(ctx) {
-        ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-    }
+    
 
     drawFrame(ctx) {
         if(this instanceof Character || this instanceof Chicken){
@@ -63,31 +42,24 @@ class MovableObject {
         this.energy -= 5;
         if(this.energy < 0) {
             this.energy = 0;
+        } else{
+            this.lastHIt= new Date().getTime();
         }
+    }
+
+    isHurt (){
+        let timepassed = new Date().getTime() - this.lastHIt;
+        timepassed = timepassed / 1000;
+        return timepassed < 0.5;
+
     }
 
     isDead() {
         return this.energy == 0;
     }
 
-    
-
-
-
-    /**
-     * 
-     * @param {array} arr - ['img/2.Secuencias_Personaje-Pepe-corrección/2.Secuencia_caminata/W-21.png']
-     *  */
-    loadImages(arr) {
-        arr.forEach((path) => {
-            let img = new Image();
-            img.src = path;
-            this.imageCache[path] = img;
-        });
-    }
-
     playAnimation(images) {
-        let i = this.currentImage % this.IMAGES_WALKING.length; // let i = 0 %(Modulo = Mathematischer Rest) 6; Rest 0 bis 6 => dann wieder 0 unendlich!! 
+        let i = this.currentImage % images.length; // let i = 0 %(Modulo = Mathematischer Rest) 6; Rest 0 bis 6 => dann wieder 0 unendlich!! 
         let path = images[i];
         this.img = this.imageCache[path];
         this.currentImage++;
